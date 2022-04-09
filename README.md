@@ -1,2 +1,2 @@
-# MuzkatServer
-Server logic for Muzkat app based on spring
+# About
+Server logic for [Muzkat](https://github.com/Lizurt/Muzkat) app based on spring
