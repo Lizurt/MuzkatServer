@@ -1,18 +1,21 @@
 package com.muzkat.server.model.entities;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Table(name = "genre")
-@Data
+@Entity
+@Getter
+@Setter
 public class GenreEntity {
     @Id
     @Column(name = "genre_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "favoriteGenres")
     private Set<UserEntity> favoredUsers;

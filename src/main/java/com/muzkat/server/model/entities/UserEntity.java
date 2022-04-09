@@ -1,29 +1,36 @@
 package com.muzkat.server.model.entities;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Table(name = "user")
-@Data
+@Table(name = "app_user")
+@Entity
+@Getter
+@Setter
 public class UserEntity {
     @Id
-    @Column(name = "login")
+    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @Column(name = "login", nullable = false, unique = true)
     private String login;
-    @Column(name = "pswrd")
+    @Column(name = "pswrd", nullable = false)
     private String password;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_author_preferences",
-            joinColumns = @JoinColumn(name = "login"),
+            joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
     private Set<AuthorEntity> favoriteAuthors;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_genre_preferences",
-            joinColumns = @JoinColumn(name = "login"),
+            joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<GenreEntity> favoriteGenres;
