@@ -1,6 +1,6 @@
-package com.muzkat.server.repositories;
+package com.muzkat.server.repository;
 
-import com.muzkat.server.model.entities.GenreEntity;
+import com.muzkat.server.entity.GenreEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

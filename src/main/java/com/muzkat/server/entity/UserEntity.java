@@ -1,6 +1,5 @@
-package com.muzkat.server.model.entities;
+package com.muzkat.server.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
