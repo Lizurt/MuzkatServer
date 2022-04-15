@@ -1,7 +1,9 @@
 package com.muzkat.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.provider.HibernateUtils;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -20,5 +22,6 @@ public class GenreEntity {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "favoriteGenres")
     private Set<UserEntity> favoredUsers;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "genre")
+    @JsonIgnore
     private Set<MusicEntity> musicsByGenre;
 }

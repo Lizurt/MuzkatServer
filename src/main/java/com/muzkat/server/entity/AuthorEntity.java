@@ -1,5 +1,6 @@
 package com.muzkat.server.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,5 +21,6 @@ public class AuthorEntity {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "favoriteAuthors")
     private Set<UserEntity> favoredUsers;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    @JsonIgnore
     private Set<MusicEntity> musicsByAuthor;
 }
