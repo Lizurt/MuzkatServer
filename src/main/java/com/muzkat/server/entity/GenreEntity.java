@@ -20,6 +20,7 @@ public class GenreEntity {
     @Column(name = "name", nullable = false)
     private String name;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "favoriteGenres")
+    @JsonIgnore
     private Set<UserEntity> favoredUsers;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "genre")
     @JsonIgnore

@@ -19,6 +19,7 @@ public class AuthorEntity {
     @Column(name = "name", nullable = false)
     private String name;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "favoriteAuthors")
+    @JsonIgnore
     private Set<UserEntity> favoredUsers;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     @JsonIgnore

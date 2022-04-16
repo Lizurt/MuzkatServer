@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
+
     @PostMapping("/user/try-login")
     public Boolean tryLogin(@RequestBody UserEntity userEntity) {
         return userService.tryLogin(userEntity);

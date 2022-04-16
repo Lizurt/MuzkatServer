@@ -1,27 +1,30 @@
 package com.muzkat.server.controller;
 
 import com.muzkat.server.entity.MusicEntity;
-import com.muzkat.server.repository.MusicRepository;
+import com.muzkat.server.entity.UserEntity;
+import com.muzkat.server.service.MusicService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class MusicController {
     @Autowired
-    private MusicRepository musicRepository;
+    private MusicService musicService;
 
-    @GetMapping("/music/get-all")
-    public List<MusicEntity> getAllMusic() {
-        return musicRepository.findAll();
+    @PostMapping("/music/get-random")
+    public List<MusicEntity> getRandomMusic(@RequestBody Integer amount) {
+        return musicService.getRandomMusic(amount);
+    }
+
+    @PostMapping("/music/get-matching")
+    public List<MusicEntity> getMatchingMusic(@RequestBody Integer amount, @RequestBody UserEntity userEntity) {
+        return musicService.getMatchingMusic(amount, userEntity);
     }
 
     @PostMapping("/music/save")
-    public MusicEntity saveMusic(@RequestBody MusicEntity musicEntity) {
-        return musicRepository.save(musicEntity);
+    public Boolean saveMusic(@RequestBody MusicEntity musicEntity) {
+        return musicService.saveMusic(musicEntity);
     }
 }
