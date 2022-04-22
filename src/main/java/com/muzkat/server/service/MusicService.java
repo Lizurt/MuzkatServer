@@ -1,9 +1,9 @@
 package com.muzkat.server.service;
 
-import com.muzkat.server.entity.AuthorEntity;
-import com.muzkat.server.entity.GenreEntity;
-import com.muzkat.server.entity.MusicEntity;
-import com.muzkat.server.entity.UserEntity;
+import com.muzkat.server.model.entity.AuthorEntity;
+import com.muzkat.server.model.entity.GenreEntity;
+import com.muzkat.server.model.entity.MusicEntity;
+import com.muzkat.server.model.entity.UserEntity;
 import com.muzkat.server.repository.MusicRepository;
 import com.muzkat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class MusicService {
                 if (matchingMusic.size() > amount) {
                     return matchingMusic;
                 }
-                List<MusicEntity> selfFullMatchMusic = musicRepository.findByGenreAndAuthorIds(
+                Set<MusicEntity> selfFullMatchMusic = musicRepository.findByGenreAndAuthorIds(
                         authorEntity.getId(), genreEntity.getId()
                 );
                 for (MusicEntity musicEntity : selfFullMatchMusic) {
@@ -52,7 +52,7 @@ public class MusicService {
         return matchingMusic;
     }
 
-    public List<MusicEntity> getRandomMusic(int amount) {
+    public Set<MusicEntity> getRandomMusic(int amount) {
         return musicRepository.findRandomMusic(amount);
     }
 }

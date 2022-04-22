@@ -1,6 +1,6 @@
 package com.muzkat.server.service;
 
-import com.muzkat.server.entity.UserEntity;
+import com.muzkat.server.model.entity.UserEntity;
 import com.muzkat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

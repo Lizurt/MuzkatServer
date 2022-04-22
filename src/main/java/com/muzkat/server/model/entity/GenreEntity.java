@@ -1,9 +1,9 @@
-package com.muzkat.server.entity;
+package com.muzkat.server.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.jpa.provider.HibernateUtils;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -12,12 +12,15 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Schema(title = "Genre entity")
 public class GenreEntity {
     @Id
     @Column(name = "genre_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(example = "123")
     private int id;
     @Column(name = "name", nullable = false)
+    @Schema(example = "Ivan Petrov")
     private String name;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "favoriteGenres")
     @JsonIgnore

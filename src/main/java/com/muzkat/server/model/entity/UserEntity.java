@@ -1,6 +1,7 @@
-package com.muzkat.server.entity;
+package com.muzkat.server.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,14 +12,18 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Schema(title = "User entity")
 public class UserEntity {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(example = "123")
     private int id;
     @Column(name = "login", nullable = false, unique = true)
+    @Schema(example = "Ivan Petrov")
     private String login;
     @Column(name = "pswrd", nullable = false)
+    @Schema(example = "qwerty0123456789")
     private String password;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
