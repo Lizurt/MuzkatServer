@@ -5,12 +5,8 @@ Server logic for [Muzkat](https://github.com/Lizurt/Muzkat) app based on spring
 
 ## Swagger documentation
 
-### Swaggerhub-based
+Use this link firstly:
+https://app.swaggerhub.com/apis/Lizurt/Muzkat/1.0.0/
 
-https://app.swaggerhub.com/apis/Lizurt/Muzkat/1.0.0#/
-
-### Backup local html-based
-
-In case if swaggerhub.com stopped responding (god bless sanctions and gov censorship) you can use a local .html documentation below.
-
+In case if swaggerhub.com stopped responding (god bless sanctions and gov censorship) you can use a local .pdf documentation:
 https://github.com/Lizurt/MuzkatServer/blob/main/docs/swaggeroffline.html
