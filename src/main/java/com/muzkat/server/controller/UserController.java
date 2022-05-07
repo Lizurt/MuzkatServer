@@ -19,7 +19,7 @@ public class UserController {
         return userService.tryLogin(userEntity);
     }
 
-    @PostMapping("/user/try-logon")
+    @PutMapping("/user/try-logon")
     @Operation(summary = "Tries to store a request body specified user entity into a database " +
             "and returns true if succeed, false otherwise.")
     public Boolean tryLogon(@RequestBody UserEntity userEntity) {

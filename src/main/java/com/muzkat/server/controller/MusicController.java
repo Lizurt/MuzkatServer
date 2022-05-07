@@ -2,6 +2,7 @@ package com.muzkat.server.controller;
 
 import com.muzkat.server.model.entity.MusicEntity;
 import com.muzkat.server.model.entity.UserEntity;
+import com.muzkat.server.model.request.AddMusicRequest;
 import com.muzkat.server.service.MusicService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,10 +41,18 @@ public class MusicController {
         return musicService.getMatchingMusic(amount, userEntity);
     }
 
-    @PostMapping("/music/save")
+    @PutMapping("/music/save")
     @Operation(summary = "Tries to store a request body specified music entity into a database " +
             "and returns true if succeed, false otherwise.")
     public Boolean saveMusic(@RequestBody MusicEntity musicEntity) {
         return musicService.saveMusic(musicEntity);
+    }
+
+    @PutMapping("/music/save-using-names")
+    @Operation(summary = "Tries to store a request body specified music, author and genre names into a database " +
+            "with new music entity creation. Returns true if succeed, false otherwise."
+    )
+    public Boolean saveMusic(@RequestBody AddMusicRequest addMusicRequest) {
+        return musicService.saveMusic(addMusicRequest);
     }
 }

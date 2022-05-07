@@ -5,10 +5,7 @@ import com.muzkat.server.repository.GenreRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,7 +21,7 @@ public class GenreController {
         return genreRepository.findAll();
     }
 
-    @PostMapping("/genre/save")
+    @PutMapping("/genre/save")
     @Operation(summary = "Tries to store a request body specified genre entity into a database.")
     public GenreEntity saveGenre(@RequestBody GenreEntity genreEntity) {
         return genreRepository.save(genreEntity);

@@ -4,6 +4,9 @@ import com.muzkat.server.model.entity.AuthorEntity;
 import com.muzkat.server.model.entity.GenreEntity;
 import com.muzkat.server.model.entity.MusicEntity;
 import com.muzkat.server.model.entity.UserEntity;
+import com.muzkat.server.model.request.AddMusicRequest;
+import com.muzkat.server.repository.AuthorRepository;
+import com.muzkat.server.repository.GenreRepository;
 import com.muzkat.server.repository.MusicRepository;
 import com.muzkat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +22,37 @@ public class MusicService {
     private MusicRepository musicRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthorRepository authorRepository;
+    @Autowired
+    private GenreRepository genreRepository;
 
     public Boolean saveMusic(MusicEntity musicEntity) {
+        musicRepository.save(musicEntity);
+        return true;
+    }
+
+    public Boolean saveMusic(AddMusicRequest addMusicRequest) {
+        return saveMusic(addMusicRequest.getMusicName(), addMusicRequest.getAuthorName(), addMusicRequest.getGenreName());
+    }
+
+    public Boolean saveMusic(String musicName, String authorName, String genreName) {
+        AuthorEntity authorEntity = authorRepository.findByAuthorName(authorName);
+        if (authorEntity == null) {
+            authorEntity = new AuthorEntity();
+            authorEntity.setName(authorName);
+            authorEntity = authorRepository.save(authorEntity);
+        }
+        GenreEntity genreEntity = genreRepository.findByGenreName(genreName);
+        if (genreEntity == null) {
+            genreEntity = new GenreEntity();
+            genreEntity.setName(genreName);
+            genreEntity = genreRepository.save(genreEntity);
+        }
+        MusicEntity musicEntity = new MusicEntity();
+        musicEntity.setName(musicName);
+        musicEntity.setAuthor(authorEntity);
+        musicEntity.setGenre(genreEntity);
         musicRepository.save(musicEntity);
         return true;
     }
@@ -31,7 +63,7 @@ public class MusicService {
 
         List<MusicEntity> matchingMusic = new ArrayList<>();
 
-        // no one said about how optimised the app should be, hehehe
+        // could be more optimised. Will probably be
         for (AuthorEntity authorEntity : favoriteAuthors) {
             for (GenreEntity genreEntity : favoriteGenres) {
                 if (matchingMusic.size() > amount) {
