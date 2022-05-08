@@ -57,7 +57,8 @@ public class MusicService {
         return true;
     }
 
-    public List<MusicEntity> getMatchingMusic(int amount, UserEntity userEntity) {
+    public List<MusicEntity> getMatchingMusic(int amount, String login) {
+        UserEntity userEntity = userRepository.findByLogin(login);
         Set<AuthorEntity> favoriteAuthors = userEntity.getFavoriteAuthors();
         Set<GenreEntity> favoriteGenres = userEntity.getFavoriteGenres();
 
