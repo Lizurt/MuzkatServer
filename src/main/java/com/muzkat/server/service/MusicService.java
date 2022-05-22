@@ -12,9 +12,7 @@ import com.muzkat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class MusicService {
@@ -58,9 +56,12 @@ public class MusicService {
     }
 
     public List<MusicEntity> getMatchingMusic(int amount, String login) {
-        UserEntity userEntity = userRepository.findByLogin(login);
-        Set<AuthorEntity> favoriteAuthors = userEntity.getFavoriteAuthors();
-        Set<GenreEntity> favoriteGenres = userEntity.getFavoriteGenres();
+        Optional<UserEntity> userEntity = userRepository.findByLogin(login);
+        if (userEntity.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Set<AuthorEntity> favoriteAuthors = userEntity.get().getFavoriteAuthors();
+        Set<GenreEntity> favoriteGenres = userEntity.get().getFavoriteGenres();
 
         List<MusicEntity> matchingMusic = new ArrayList<>();
 
