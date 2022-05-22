@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface GenreRepository extends JpaRepository<GenreEntity, Integer> {
     @Query("SELECT ge FROM GenreEntity ge WHERE ge.name = :gename")
-    GenreEntity findByGenreName(@Param("gename") String genreName);
+    Optional<GenreEntity> findByGenreName(@Param("gename") String genreName);
 }

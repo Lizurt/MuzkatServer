@@ -35,17 +35,23 @@ public class MusicService {
     }
 
     public Boolean saveMusic(String musicName, String authorName, String genreName) {
-        AuthorEntity authorEntity = authorRepository.findByAuthorName(authorName);
-        if (authorEntity == null) {
+        Optional<AuthorEntity> possibleAuthorEntity = authorRepository.findByAuthorName(authorName);
+        AuthorEntity authorEntity;
+        if (possibleAuthorEntity.isEmpty()) {
             authorEntity = new AuthorEntity();
             authorEntity.setName(authorName);
             authorEntity = authorRepository.save(authorEntity);
+        } else {
+            authorEntity = possibleAuthorEntity.get();
         }
-        GenreEntity genreEntity = genreRepository.findByGenreName(genreName);
-        if (genreEntity == null) {
+        Optional<GenreEntity> possibleGenreEntity = genreRepository.findByGenreName(genreName);
+        GenreEntity genreEntity;
+        if (possibleGenreEntity.isEmpty()) {
             genreEntity = new GenreEntity();
             genreEntity.setName(genreName);
             genreEntity = genreRepository.save(genreEntity);
+        } else {
+            genreEntity = possibleGenreEntity.get();
         }
         MusicEntity musicEntity = new MusicEntity();
         musicEntity.setName(musicName);

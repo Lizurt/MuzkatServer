@@ -42,13 +42,6 @@ public class MusicController {
         return musicService.getMatchingMusic(getMatchingMusicRequest.getAmount(), getMatchingMusicRequest.getLogin());
     }
 
-    @PutMapping("/music/save")
-    @Operation(summary = "Tries to store a request body specified music entity into a database " +
-            "and returns true if succeed, false otherwise.")
-    public Boolean saveMusic(@RequestBody MusicEntity musicEntity) {
-        return musicService.saveMusic(musicEntity);
-    }
-
     @PutMapping("/music/save-using-names")
     @Operation(summary = "Tries to store a request body specified music, author and genre names into a database " +
             "with new music entity creation. Returns true if succeed, false otherwise."
