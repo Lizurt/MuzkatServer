@@ -4,13 +4,14 @@ import com.muzkat.server.model.entity.AuthorEntity;
 import com.muzkat.server.model.entity.GenreEntity;
 import com.muzkat.server.model.entity.MusicEntity;
 import com.muzkat.server.model.entity.UserEntity;
+import com.muzkat.server.model.request.AddMusicRequest;
 import com.muzkat.server.model.request.GetMatchingMusicRequest;
+import com.muzkat.server.repository.AuthorRepository;
+import com.muzkat.server.repository.GenreRepository;
 import com.muzkat.server.repository.MusicRepository;
 import com.muzkat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,17 +22,47 @@ public class MusicService {
     private MusicRepository musicRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthorRepository authorRepository;
+    @Autowired
+    private GenreRepository genreRepository;
     private static final Random random = new Random();
 
-    public Boolean saveMusic(MusicEntity musicEntity) {
+    public Boolean saveMusic(AddMusicRequest addMusicRequest) {
+        return saveMusic(addMusicRequest.getMusicName(), addMusicRequest.getAuthorName(), addMusicRequest.getGenreName());
+    }
+
+    public Boolean saveMusic(String musicName, String authorName, String genreName) {
+        Optional<AuthorEntity> possibleAuthorEntity = authorRepository.findByAuthorName(authorName);
+        AuthorEntity authorEntity;
+        if (possibleAuthorEntity.isEmpty()) {
+            authorEntity = new AuthorEntity();
+            authorEntity.setName(authorName);
+            authorEntity = authorRepository.save(authorEntity);
+        } else {
+            authorEntity = possibleAuthorEntity.get();
+        }
+        Optional<GenreEntity> possibleGenreEntity = genreRepository.findByGenreName(genreName);
+        GenreEntity genreEntity;
+        if (possibleGenreEntity.isEmpty()) {
+            genreEntity = new GenreEntity();
+            genreEntity.setName(genreName);
+            genreEntity = genreRepository.save(genreEntity);
+        } else {
+            genreEntity = possibleGenreEntity.get();
+        }
+        MusicEntity musicEntity = new MusicEntity();
+        musicEntity.setName(musicName);
+        musicEntity.setAuthor(authorEntity);
+        musicEntity.setGenre(genreEntity);
         musicRepository.save(musicEntity);
         return true;
     }
 
-    public List<MusicEntity> getMatchingMusic(GetMatchingMusicRequest getMatchingMusicRequest) {
+    public Set<MusicEntity> getMatchingMusic(GetMatchingMusicRequest getMatchingMusicRequest) {
         Optional<UserEntity> possibleUser = userRepository.findByLogin(getMatchingMusicRequest.getLogin());
         if (possibleUser.isEmpty()) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
         Set<AuthorEntity> favoriteAuthors = possibleUser.get().getFavoriteAuthors();
         Set<GenreEntity> favoriteGenres = possibleUser.get().getFavoriteGenres();
@@ -48,10 +79,63 @@ public class MusicService {
             favGenresIds[i++] = favGenre.getId();
         }
 
-        List<MusicEntity> matchingMusic = musicRepository.findSelfMatching(
+        Set<MusicEntity> matchingMusic = musicRepository.findMatchingPrioritized(
                 favAuthorsIds,
                 favGenresIds,
                 getMatchingMusicRequest.getAmount()
+        );
+
+        if (matchingMusic.size() >= getMatchingMusicRequest.getAmount()) {
+            return matchingMusic;
+        }
+
+        // oh, finally. An O(n^99999) algorithm
+        for (GenreEntity genreEntity : favoriteGenres) {
+            Set<UserEntity> buddies = userRepository.findSimilarTasteUsersByGenreId(
+                    genreEntity.getId(),
+                    possibleUser.get().getId()
+            );
+            for (UserEntity buddy : buddies) {
+                for (GenreEntity buddyFavGenre : buddy.getFavoriteGenres()) {
+                    matchingMusic.addAll(
+                            musicRepository.findByGenreId(
+                                    buddyFavGenre.getId(),
+                                    Pageable.ofSize(getMatchingMusicRequest.getAmount() - matchingMusic.size())
+                            )
+                    );
+                    if (matchingMusic.size() >= getMatchingMusicRequest.getAmount()) {
+                        return matchingMusic;
+                    }
+                }
+            }
+        }
+
+        // why not factorial-complex?
+        for (AuthorEntity authorEntity : favoriteAuthors) {
+            Set<UserEntity> buddies = userRepository.findSimilarTasteUsersByAuthorId(
+                    authorEntity.getId(),
+                    possibleUser.get().getId()
+            );
+            for (UserEntity buddy : buddies) {
+                for (AuthorEntity buddyFavAuthor : buddy.getFavoriteAuthors()) {
+                    matchingMusic.addAll(
+                            musicRepository.findByAuthorId(
+                                    buddyFavAuthor.getId(),
+                                    Pageable.ofSize(getMatchingMusicRequest.getAmount() - matchingMusic.size())
+                            )
+                    );
+                    if (matchingMusic.size() >= getMatchingMusicRequest.getAmount()) {
+                        return matchingMusic;
+                    }
+                }
+            }
+        }
+
+        // the last attempt to fill the matching music set...
+        matchingMusic.addAll(shuffleMusicList(
+                musicRepository.findRandomMusic(
+                        getMatchingMusicRequest.getAmount() - matchingMusic.size())
+                )
         );
 
         return matchingMusic;
