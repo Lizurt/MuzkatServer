@@ -2,7 +2,6 @@ package com.muzkat.server.controller;
 
 import com.muzkat.server.model.entity.MusicEntity;
 import com.muzkat.server.model.entity.UserEntity;
-import com.muzkat.server.model.request.AddMusicRequest;
 import com.muzkat.server.model.request.GetMatchingMusicRequest;
 import com.muzkat.server.service.MusicService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +27,7 @@ public class MusicController {
                     "appear than middle ones. Won't return the necessary amount of entities if there aren't enough in " +
                     "a database. Otherwise, returns the exact amount of entities."
     )
-    public Set<MusicEntity> getRandomMusic(@RequestBody Integer amount) {
+    public List<MusicEntity> getRandomMusic(@RequestBody Integer amount) {
         return musicService.getRandomMusic(amount);
     }
 
@@ -39,14 +38,13 @@ public class MusicController {
                     "are being taken from other database tables depending on the user's data."
     )
     public List<MusicEntity> getMatchingMusic(@RequestBody GetMatchingMusicRequest getMatchingMusicRequest) {
-        return musicService.getMatchingMusic(getMatchingMusicRequest.getAmount(), getMatchingMusicRequest.getLogin());
+        return musicService.getMatchingMusic(getMatchingMusicRequest);
     }
 
-    @PutMapping("/music/save-using-names")
-    @Operation(summary = "Tries to store a request body specified music, author and genre names into a database " +
-            "with new music entity creation. Returns true if succeed, false otherwise."
-    )
-    public Boolean saveMusic(@RequestBody AddMusicRequest addMusicRequest) {
-        return musicService.saveMusic(addMusicRequest);
+    @PostMapping("/music/save")
+    @Operation(summary = "Tries to store a request body specified music entity into a database " +
+            "and returns true if succeed, false otherwise.")
+    public Boolean saveMusic(@RequestBody MusicEntity musicEntity) {
+        return musicService.saveMusic(musicEntity);
     }
 }
