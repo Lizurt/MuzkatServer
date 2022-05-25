@@ -15,6 +15,3 @@ https://muzkat-server.herokuapp.com/swagger-ui/index.html
 Spare link just in case:
 https://app.swaggerhub.com/apis/Lizurt/Muzkat/1.0.0/
 
-In case if swaggerhub.com stopped responding too (god bless sanctions and gov censorship) you can use a local .pdf documentation:
-https://github.com/Lizurt/MuzkatServer/blob/main/docs/swaggeroffline.pdf
-
