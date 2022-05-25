@@ -28,7 +28,7 @@ public class MusicController {
                     "appear than middle ones. Won't return the necessary amount of entities if there aren't enough in " +
                     "a database. Otherwise, returns the exact amount of entities."
     )
-    public Set<MusicEntity> getRandomMusic(@RequestBody Integer amount) {
+    public List<MusicEntity> getRandomMusic(@RequestBody Integer amount) {
         return musicService.getRandomMusic(amount);
     }
 
@@ -38,8 +38,8 @@ public class MusicController {
             description = "Amount of entities and a user are request body specified. Genre and author preferences " +
                     "are being taken from other database tables depending on the user's data."
     )
-    public List<MusicEntity> getMatchingMusic(@RequestBody GetMatchingMusicRequest getMatchingMusicRequest) {
-        return musicService.getMatchingMusic(getMatchingMusicRequest.getAmount(), getMatchingMusicRequest.getLogin());
+    public Set<MusicEntity> getMatchingMusic(@RequestBody GetMatchingMusicRequest getMatchingMusicRequest) {
+        return musicService.getMatchingMusic(getMatchingMusicRequest);
     }
 
     @PutMapping("/music/save-using-names")
