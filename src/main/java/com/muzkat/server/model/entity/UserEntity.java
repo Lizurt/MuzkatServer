@@ -41,4 +41,12 @@ public class UserEntity {
     )
     @JsonIgnore
     private Set<GenreEntity> favoriteGenres;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "metric_counted_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "metric_id")
+    )
+    @JsonIgnore
+    private Set<MetricEntity> countedInMetrics;
 }

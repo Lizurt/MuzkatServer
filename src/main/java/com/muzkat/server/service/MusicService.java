@@ -1,5 +1,6 @@
 package com.muzkat.server.service;
 
+import com.muzkat.server.Metrics;
 import com.muzkat.server.model.entity.AuthorEntity;
 import com.muzkat.server.model.entity.GenreEntity;
 import com.muzkat.server.model.entity.MusicEntity;
@@ -26,6 +27,9 @@ public class MusicService {
     private AuthorRepository authorRepository;
     @Autowired
     private GenreRepository genreRepository;
+    @Autowired
+    private MetricService metricService;
+
     private static final Random random = new Random();
 
     public Boolean saveMusic(AddMusicRequest addMusicRequest) {
@@ -84,6 +88,8 @@ public class MusicService {
                 favGenresIds,
                 getMatchingMusicRequest.getAmount()
         );
+
+        metricService.tryCountInMetric(possibleUser.get().getLogin(), Metrics.SEARCHED);
 
         if (matchingMusic.size() >= getMatchingMusicRequest.getAmount()) {
             return matchingMusic;
