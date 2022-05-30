@@ -13,8 +13,8 @@ import java.util.Set;
 
 @Repository
 public interface MusicRepository extends JpaRepository<MusicEntity, Integer> {
-    @Query(value = "SELECT * FROM music LIMIT :amt OFFSET GREATEST(0, RANDOM() * (SELECT COUNT(*) FROM music) - :amt)", nativeQuery = true)
-    List<MusicEntity> findRandomMusic(@Param("amt") int amount);
+    @Query(value = "SELECT me FROM MusicEntity me")
+    List<MusicEntity> findRandomMusic(Pageable pageable);
 
     @Query(value = "SELECT mus FROM MusicEntity mus WHERE mus.author.id = :aid")
     Set<MusicEntity> findByAuthorId(@Param("aid") int authorId);
@@ -30,15 +30,14 @@ public interface MusicRepository extends JpaRepository<MusicEntity, Integer> {
 
     // can't transform this into non-native query - not sure if hql can save condition results.
     @Query(nativeQuery = true, value = "SELECT * FROM music " +
-            "WHERE genre_id IN (:aids) OR author_id IN (:gids)" +
+            "WHERE author_id IN (:aids) OR genre_id IN (:gids)" +
             "ORDER BY (CASE " +
             "WHEN author_id IN (:aids) AND genre_id IN (:gids) THEN 1 " +
-            "ELSE 2 END) "+
-            "LIMIT :amt"
+            "ELSE 2 END) "
     )
-    Set<MusicEntity> findMatchingPrioritized(
+    List<MusicEntity> findMatchingPrioritized(
             @Param("aids") int[] authorIds,
             @Param("gids") int[] genreIds,
-            @Param("amt") Integer amount
+            Pageable pageable
     );
 }

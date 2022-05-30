@@ -12,6 +12,7 @@ import com.muzkat.server.repository.GenreRepository;
 import com.muzkat.server.repository.MusicRepository;
 import com.muzkat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -83,11 +84,11 @@ public class MusicService {
             favGenresIds[i++] = favGenre.getId();
         }
 
-        Set<MusicEntity> matchingMusic = musicRepository.findMatchingPrioritized(
+        Set<MusicEntity> matchingMusic = new HashSet<>(musicRepository.findMatchingPrioritized(
                 favAuthorsIds,
                 favGenresIds,
-                getMatchingMusicRequest.getAmount()
-        );
+                PageRequest.of(getMatchingMusicRequest.getPage(), getMatchingMusicRequest.getAmount())
+        ));
 
         metricService.tryCountInMetric(possibleUser.get().getLogin(), Metrics.SEARCHED);
 
@@ -116,7 +117,6 @@ public class MusicService {
             }
         }
 
-        // why not factorial-complex?
         for (AuthorEntity authorEntity : favoriteAuthors) {
             Set<UserEntity> buddies = userRepository.findSimilarTasteUsersByAuthorId(
                     authorEntity.getId(),
@@ -138,17 +138,22 @@ public class MusicService {
         }
 
         // the last attempt to fill the matching music set...
-        matchingMusic.addAll(shuffleMusicList(
-                musicRepository.findRandomMusic(
-                        getMatchingMusicRequest.getAmount() - matchingMusic.size())
-                )
-        );
+        int amt = getMatchingMusicRequest.getAmount() - matchingMusic.size();
+        long total = musicRepository.count();
+        int page = getMatchingMusicRequest.getPage() > 0 ? getMatchingMusicRequest.getPage() - 1 : 1;
+        matchingMusic.addAll(musicRepository.findRandomMusic(PageRequest.of(page, amt)));
 
         return matchingMusic;
     }
 
     public List<MusicEntity> getRandomMusic(int amount) {
-        return shuffleMusicList(musicRepository.findRandomMusic(amount));
+        long total = musicRepository.count();
+        return shuffleMusicList(musicRepository.findRandomMusic(
+                PageRequest.of(
+                        (int) (Math.random() * total / amount),
+                        amount
+                )
+        ));
     }
 
     public List<MusicEntity> shuffleMusicList(List<MusicEntity> musics) {
