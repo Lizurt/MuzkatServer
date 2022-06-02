@@ -20,24 +20,41 @@ public class MetricController {
     @Autowired
     private MetricRepository metricRepository;
 
+    /**
+     * Tries to count a use in some metric.
+     * @param countInMetricRequest
+     */
     @PostMapping("/metric/count")
     @Operation(summary = "Tries to count a use in some metric.")
     public void tryCountInMetric(@RequestBody CountInMetricRequest countInMetricRequest) {
         metricService.tryCountInMetric(countInMetricRequest);
     }
 
+    /**
+     * Gets amount of users reached the metric.
+     * @param name
+     * @return
+     */
     @GetMapping("/metric/count/{name}")
     @Operation(summary = "Gets amount of users reached the metric.")
     public Integer getCount(@PathVariable String name) {
         return metricService.getCount(name);
     }
 
+    /**
+     * Gets all possible metrics and their statistics.
+     * @return
+     */
     @GetMapping("/metric/get-all")
     @Operation(summary = "Gets all possible metrics and their statistics.")
     public List<MetricEntity> getAll() {
         return metricRepository.findAll();
     }
 
+    /**
+     * Increases a metric's counter by 1.
+     * @param increaseMetricRequest
+     */
     @PutMapping("/metric/inc")
     @Operation(summary = "Increases a metric's counter by 1.")
     public void increaseMetric(@RequestBody IncreaseMetricRequest increaseMetricRequest) {

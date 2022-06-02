@@ -15,12 +15,21 @@ public class AuthorController {
     @Autowired
     private AuthorRepository authorRepository;
 
+    /**
+     * Returns all available authors.
+     * @return
+     */
     @GetMapping("/author/get-all")
     @Operation(summary = "Returns all available authors.")
     public List<AuthorEntity> getAllAuthors() {
         return authorRepository.findAll();
     }
 
+    /**
+     * Tries to store a request body specified author entity to a database.
+     * @param authorEntity
+     * @return
+     */
     @PutMapping("/author/save")
     @Operation(summary = "Tries to store a request body specified author entity to a database.")
     public AuthorEntity saveAuthor(@RequestBody AuthorEntity authorEntity) {

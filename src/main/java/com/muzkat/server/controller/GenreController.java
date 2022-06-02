@@ -15,12 +15,21 @@ public class GenreController {
     @Autowired
     private GenreRepository genreRepository;
 
+    /**
+     * Returns all available genres.
+     * @return
+     */
     @GetMapping("/genre/get-all")
     @Operation(summary = "Returns all available genres.")
     public List<GenreEntity> getAllGenres() {
         return genreRepository.findAll();
     }
 
+    /**
+     * Tries to store a request body specified genre entity into a database.
+     * @param genreEntity
+     * @return
+     */
     @PutMapping("/genre/save")
     @Operation(summary = "Tries to store a request body specified genre entity into a database.")
     public GenreEntity saveGenre(@RequestBody GenreEntity genreEntity) {

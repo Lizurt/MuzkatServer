@@ -19,6 +19,11 @@ public class MusicController {
     @Autowired
     private MusicService musicService;
 
+    /**
+     * Returns "random" music entities from a database. Amount is request body specified.
+     * @param amount
+     * @return
+     */
     @PostMapping("/music/get-random")
     @Operation(
             summary = "Returns \"random\" music entities from a database. Amount is request body specified.",
@@ -32,6 +37,11 @@ public class MusicController {
         return musicService.getRandomMusic(amount);
     }
 
+    /**
+     * Returns all filter-matching music entities.
+     * @param getMatchingMusicRequest
+     * @return
+     */
     @PostMapping("/music/get-matching")
     @Operation(
             summary = "Returns all filter-matching music entities.",
@@ -42,6 +52,12 @@ public class MusicController {
         return musicService.getMatchingMusic(getMatchingMusicRequest);
     }
 
+    /**
+     * Tries to store a request body specified music, author and genre names into a database
+     * with new music entity creation. Returns true if succeed, false otherwise.
+     * @param addMusicRequest
+     * @return
+     */
     @PutMapping("/music/save-using-names")
     @Operation(summary = "Tries to store a request body specified music, author and genre names into a database " +
             "with new music entity creation. Returns true if succeed, false otherwise."
