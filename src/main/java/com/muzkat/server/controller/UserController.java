@@ -22,24 +22,45 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Gets all user favorite genres.
+     * @param login
+     * @return
+     */
     @GetMapping("/user/get-fav-genres/{login}")
     @Operation(summary = "Gets all user favorite genres.")
     public Set<GenreEntity> getFavGenres(@PathVariable String login) {
         return userService.getFavGenres(login);
     }
 
+    /**
+     * Gets all user favorite genres.
+     * @param login
+     * @return
+     */
     @GetMapping("/user/get-fav-authors/{login}")
     @Operation(summary = "Gets all user favorite genres.")
     public Set<AuthorEntity> getFavAuthors(@PathVariable String login) {
         return userService.getFavAuthors(login);
     }
 
+    /**
+     * Checks request body specified login data and returns true if it matches, false otherwise.
+     * @param userEntity
+     * @return
+     */
     @PostMapping("/user/try-login")
     @Operation(summary = "Checks request body specified login data and returns true if it matches, false otherwise.")
     public Boolean tryLogin(@RequestBody UserEntity userEntity) {
         return userService.tryLogin(userEntity);
     }
 
+    /**
+     * Tries to store a request body specified user entity into a database
+     * and returns true if succeed, false otherwise.
+     * @param userEntity
+     * @return
+     */
     @PostMapping("/user/try-logon")
     @Operation(summary = "Tries to store a request body specified user entity into a database " +
             "and returns true if succeed, false otherwise.")
@@ -47,18 +68,30 @@ public class UserController {
         return userService.tryLogon(userEntity);
     }
 
+    /**
+     * Adds an author to user's favorite authors.
+     * @param addFavAuthorRequest
+     */
     @PostMapping("/user/add-fav-author")
     @Operation(summary = "Adds an author to user's favorite authors.")
     public void addFavAuthor(@RequestBody AddFavAuthorRequest addFavAuthorRequest) {
         userService.addFavAuthor(addFavAuthorRequest);
     }
 
+    /**
+     * Adds a genre to user's favorite genres.
+     * @param addFavGenreRequest
+     */
     @PostMapping("/user/add-fav-genre")
     @Operation(summary = "Adds a genre to user's favorite genres.")
     public void addFavGenre(@RequestBody AddFavGenreRequest addFavGenreRequest) {
         userService.addFavGenre(addFavGenreRequest);
     }
 
+    /**
+     * Removes an author from user's favorite authors.
+     * @param deleteFavAuthorRequest
+     */
     @PostMapping("/user/del-fav-author")
     @Operation(summary = "Removes an author from user's favorite authors.")
     public void delFavAuthor(@RequestBody DeleteFavAuthorRequest deleteFavAuthorRequest) {
@@ -66,6 +99,10 @@ public class UserController {
 
     }
 
+    /**
+     * Removes a genre from user's favorite authors.
+     * @param deleteFavGenreRequest
+     */
     @PostMapping("/user/del-fav-genre")
     @Operation(summary = "Removes a genre from user's favorite authors.")
     public void delFavGenre(@RequestBody DeleteFavGenreRequest deleteFavGenreRequest) {

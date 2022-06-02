@@ -17,6 +17,11 @@ public class MetricService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Tries to count a user in a metric using the user's login and metric's name
+     * @param login
+     * @param metricName
+     */
     public void tryCountInMetric(String login, String metricName) {
         Optional<MetricEntity> metricEntity = metricRepository.findByName(metricName);
         if (metricEntity.isEmpty()) {
@@ -33,15 +38,27 @@ public class MetricService {
         increaseMetric(metricEntity.get());
     }
 
+    /**
+     * Tries to count a user in a metric using the request
+     * @param countInMetricRequest
+     */
     public void tryCountInMetric(CountInMetricRequest countInMetricRequest) {
         tryCountInMetric(countInMetricRequest.getLogin(), countInMetricRequest.getMetricName());
     }
 
+    /**
+     * Increases the reached users counter in a metric
+     * @param metricEntity
+     */
     public void increaseMetric(MetricEntity metricEntity) {
         metricEntity.setReachedAmt(metricEntity.getReachedAmt() + 1);
         metricRepository.save(metricEntity);
     }
 
+    /**
+     * Increases the reached users counter in a metric using the metric name
+     * @param metricName
+     */
     public void increaseMetric(String metricName) {
         Optional<MetricEntity> metricEntity = metricRepository.findByName(metricName);
         if (metricEntity.isEmpty()) {
@@ -50,6 +67,11 @@ public class MetricService {
         increaseMetric(metricEntity.get());
     }
 
+    /**
+     * Gets amount of users that reached the metric
+     * @param metricName
+     * @return
+     */
     public Integer getCount(String metricName) {
         Optional<MetricEntity> metricEntity = metricRepository.findByName(metricName);
         return metricEntity.isEmpty() ? -1 : metricEntity.get().getReachedAmt();
