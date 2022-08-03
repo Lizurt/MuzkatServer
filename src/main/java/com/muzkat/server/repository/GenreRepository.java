@@ -10,11 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface GenreRepository extends JpaRepository<GenreEntity, Integer> {
-    /**
-     * Finds all genres that match the given name
-     * @param genreName
-     * @return
-     */
     @Query("SELECT ge FROM GenreEntity ge WHERE ge.name = :gename")
     Optional<GenreEntity> findByGenreName(@Param("gename") String genreName);
 }
