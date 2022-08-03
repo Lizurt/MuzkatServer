@@ -10,11 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<AuthorEntity, Integer> {
-    /**
-     * Finds all authors that match the given name
-     * @param authorName
-     * @return
-     */
     @Query("SELECT ae FROM AuthorEntity ae WHERE ae.name = :aename")
     Optional<AuthorEntity> findByAuthorName(@Param("aename") String authorName);
 }

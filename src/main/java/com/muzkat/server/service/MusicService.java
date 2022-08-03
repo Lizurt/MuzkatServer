@@ -1,6 +1,5 @@
 package com.muzkat.server.service;
 
-import com.muzkat.server.Metrics;
 import com.muzkat.server.model.entity.AuthorEntity;
 import com.muzkat.server.model.entity.GenreEntity;
 import com.muzkat.server.model.entity.MusicEntity;
@@ -18,9 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-/**
- * A spring service that handles all music-related buisness logic
- */
 @Service
 public class MusicService {
     @Autowired
@@ -31,27 +27,13 @@ public class MusicService {
     private AuthorRepository authorRepository;
     @Autowired
     private GenreRepository genreRepository;
-    @Autowired
-    private MetricService metricService;
 
     private static final Random random = new Random();
 
-    /**
-     * Puts or updates a music in MusicRepository (and does so in a database). Uses a request object
-     * @param addMusicRequest
-     * @return
-     */
     public Boolean saveMusic(AddMusicRequest addMusicRequest) {
         return saveMusic(addMusicRequest.getMusicName(), addMusicRequest.getAuthorName(), addMusicRequest.getGenreName());
     }
 
-    /**
-     * Puts or updates a music in MusicRepository (and does so in a database). Uses 3 params that define a music
-     * @param musicName
-     * @param authorName
-     * @param genreName
-     * @return
-     */
     public Boolean saveMusic(String musicName, String authorName, String genreName) {
         Optional<AuthorEntity> possibleAuthorEntity = authorRepository.findByAuthorName(authorName);
         AuthorEntity authorEntity;
@@ -79,13 +61,6 @@ public class MusicService {
         return true;
     }
 
-    /**
-     * Gets all music entities matching the given request. That means it will firstly return musics that matches
-     * all the favorite authors and genres lists, then partly matching ones. Includes music of users with similar
-     * tastes in genres and authors
-     * @param getMatchingMusicRequest
-     * @return
-     */
     public Set<MusicEntity> getMatchingMusic(GetMatchingMusicRequest getMatchingMusicRequest) {
         Optional<UserEntity> possibleUser = userRepository.findByLogin(getMatchingMusicRequest.getLogin());
         if (possibleUser.isEmpty()) {
@@ -111,8 +86,6 @@ public class MusicService {
                 favGenresIds,
                 PageRequest.of(getMatchingMusicRequest.getPage(), getMatchingMusicRequest.getAmount())
         ));
-
-        metricService.tryCountInMetric(possibleUser.get().getLogin(), Metrics.SEARCHED);
 
         if (matchingMusic.size() >= getMatchingMusicRequest.getAmount()) {
             return matchingMusic;
@@ -168,11 +141,6 @@ public class MusicService {
         return matchingMusic;
     }
 
-    /**
-     * Gets "random" music
-     * @param amount
-     * @return
-     */
     public List<MusicEntity> getRandomMusic(int amount) {
         long total = musicRepository.count();
         return shuffleMusicList(musicRepository.findRandomMusic(
@@ -183,11 +151,6 @@ public class MusicService {
         ));
     }
 
-    /**
-     * Shuffles music entity list chaotically
-     * @param musics
-     * @return
-     */
     public List<MusicEntity> shuffleMusicList(List<MusicEntity> musics) {
         for (int i = musics.size() - 1; i > 0; i--) {
             int j = random.nextInt(i + 1);

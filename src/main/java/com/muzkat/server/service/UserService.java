@@ -1,18 +1,15 @@
 package com.muzkat.server.service;
 
-import com.muzkat.server.Metrics;
 import com.muzkat.server.model.entity.AuthorEntity;
 import com.muzkat.server.model.entity.GenreEntity;
 import com.muzkat.server.model.entity.UserEntity;
 import com.muzkat.server.model.request.*;
 import com.muzkat.server.repository.AuthorRepository;
 import com.muzkat.server.repository.GenreRepository;
-import com.muzkat.server.repository.MetricRepository;
 import com.muzkat.server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.message.AuthException;
 import java.util.*;
 
 @Service
@@ -23,8 +20,6 @@ public class UserService {
     private AuthorRepository authorRepository;
     @Autowired
     private GenreRepository genreRepository;
-    @Autowired
-    private MetricService metricService;
 
     public Boolean tryLogin(UserEntity userEntity) {
         Optional<UserEntity> actualUser = userRepository.findByLogin(userEntity.getLogin());
@@ -39,8 +34,6 @@ public class UserService {
         newUser.setLogin(userEntity.getLogin());
         newUser.setPassword(userEntity.getPassword());
         userRepository.save(newUser);
-        CountInMetricRequest countInMetricRequest = new CountInMetricRequest();
-        metricService.tryCountInMetric(newUser.getLogin(), Metrics.REGISTERED);
         return true;
     }
 
@@ -79,7 +72,6 @@ public class UserService {
         }
 
         userRepository.addFavAuthor(possibleUserEntity.get().getId(), authorEntity.getId());
-        metricService.tryCountInMetric(possibleUserEntity.get().getLogin(), Metrics.PREFERENCED);
     }
 
     public void addFavGenre(AddFavGenreRequest addFavGenreRequest) {
@@ -101,7 +93,6 @@ public class UserService {
         }
 
         userRepository.addFavGenre(possibleUserEntity.get().getId(), genreEntity.getId());
-        metricService.tryCountInMetric(possibleUserEntity.get().getLogin(), Metrics.PREFERENCED);
     }
 
     public void deleteFavAuthor(DeleteFavAuthorRequest deleteFavAuthorRequest) {
@@ -117,7 +108,6 @@ public class UserService {
         }
 
         userRepository.delFavAuthor(possibleUserEntity.get().getId(), possibleAuthorEntity.get().getId());
-        metricService.tryCountInMetric(possibleUserEntity.get().getLogin(), Metrics.PREFERENCED);
     }
 
     public void deleteFavGenre(DeleteFavGenreRequest deleteFavGenreRequest) {
@@ -133,6 +123,5 @@ public class UserService {
         }
 
         userRepository.delFavGenre(possibleUserEntity.get().getId(), possibleGenreEntity.get().getId());
-        metricService.tryCountInMetric(possibleUserEntity.get().getLogin(), Metrics.PREFERENCED);
     }
 }
