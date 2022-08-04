@@ -53,6 +53,11 @@ public class MusicService {
         } else {
             genreEntity = possibleGenreEntity.get();
         }
+        List<MusicEntity> duplicates = musicRepository.findAllByValues(musicName, authorEntity, genreEntity);
+        if (duplicates != null && duplicates.size() > 0) {
+            return false;
+        }
+
         MusicEntity musicEntity = new MusicEntity();
         musicEntity.setName(musicName);
         musicEntity.setAuthor(authorEntity);
