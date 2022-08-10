@@ -49,13 +49,13 @@ public class UserController {
 
     @PostMapping("/user/add-fav-author")
     @Operation(summary = "Adds an author to user's favorite authors.")
-    public Boolean addFavAuthor(@RequestBody AddFavAuthorRequest addFavAuthorRequest) {
+    public AuthorEntity addFavAuthor(@RequestBody AddFavAuthorRequest addFavAuthorRequest) {
         return userService.addFavAuthor(addFavAuthorRequest);
     }
 
     @PostMapping("/user/add-fav-genre")
     @Operation(summary = "Adds a genre to user's favorite genres.")
-    public Boolean addFavGenre(@RequestBody AddFavGenreRequest addFavGenreRequest) {
+    public GenreEntity addFavGenre(@RequestBody AddFavGenreRequest addFavGenreRequest) {
         return userService.addFavGenre(addFavGenreRequest);
     }
 

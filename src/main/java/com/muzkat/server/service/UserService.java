@@ -53,10 +53,10 @@ public class UserService {
         return userEntity.get().getFavoriteAuthors();
     }
 
-    public boolean addFavAuthor(AddFavAuthorRequest addFavAuthorRequest) {
+    public AuthorEntity addFavAuthor(AddFavAuthorRequest addFavAuthorRequest) {
         Optional<UserEntity> possibleUserEntity = userRepository.findByLogin(addFavAuthorRequest.getLogin());
         if (possibleUserEntity.isEmpty()) {
-            return false;
+            return null;
         }
 
         Optional<AuthorEntity> possibleAuthorEntity = authorRepository.findByAuthorName(
@@ -64,18 +64,18 @@ public class UserService {
         );
         AuthorEntity authorEntity;
         if (possibleAuthorEntity.isEmpty()) {
-            return false;
+            return null;
         }
         authorEntity = possibleAuthorEntity.get();
 
         userRepository.addFavAuthor(possibleUserEntity.get().getId(), authorEntity.getId());
-        return true;
+        return authorEntity;
     }
 
-    public boolean addFavGenre(AddFavGenreRequest addFavGenreRequest) {
+    public GenreEntity addFavGenre(AddFavGenreRequest addFavGenreRequest) {
         Optional<UserEntity> possibleUserEntity = userRepository.findByLogin(addFavGenreRequest.getLogin());
         if (possibleUserEntity.isEmpty()) {
-            return false;
+            return null;
         }
 
         Optional<GenreEntity> possibleAuthorEntity = genreRepository.findByGenreName(
@@ -83,12 +83,12 @@ public class UserService {
         );
         GenreEntity genreEntity;
         if (possibleAuthorEntity.isEmpty()) {
-            return false;
+            return null;
         }
         genreEntity = possibleAuthorEntity.get();
 
         userRepository.addFavGenre(possibleUserEntity.get().getId(), genreEntity.getId());
-        return true;
+        return genreEntity;
     }
 
     public void deleteFavAuthor(DeleteFavAuthorRequest deleteFavAuthorRequest) {
