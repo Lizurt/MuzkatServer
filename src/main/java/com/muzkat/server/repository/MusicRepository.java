@@ -1,5 +1,7 @@
 package com.muzkat.server.repository;
 
+import com.muzkat.server.model.entity.AuthorEntity;
+import com.muzkat.server.model.entity.GenreEntity;
 import com.muzkat.server.model.entity.MusicEntity;
 import com.muzkat.server.model.entity.UserEntity;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,11 @@ import java.util.Set;
 
 @Repository
 public interface MusicRepository extends JpaRepository<MusicEntity, Integer> {
+    @Query(value = "SELECT me FROM MusicEntity me WHERE me.name = :men AND me.author = :ae AND me.genre = :ge")
+    List<MusicEntity> findAllByValues(@Param("men") String musicName,
+                                  @Param("ae") AuthorEntity authorEntity,
+                                  @Param("ge") GenreEntity genreEntity);
+
     @Query(value = "SELECT me FROM MusicEntity me")
     List<MusicEntity> findRandomMusic(Pageable pageable);
 

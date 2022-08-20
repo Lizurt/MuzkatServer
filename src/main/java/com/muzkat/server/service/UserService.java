@@ -53,10 +53,10 @@ public class UserService {
         return userEntity.get().getFavoriteAuthors();
     }
 
-    public void addFavAuthor(AddFavAuthorRequest addFavAuthorRequest) {
+    public AuthorEntity addFavAuthor(AddFavAuthorRequest addFavAuthorRequest) {
         Optional<UserEntity> possibleUserEntity = userRepository.findByLogin(addFavAuthorRequest.getLogin());
         if (possibleUserEntity.isEmpty()) {
-            return;
+            return null;
         }
 
         Optional<AuthorEntity> possibleAuthorEntity = authorRepository.findByAuthorName(
@@ -64,20 +64,18 @@ public class UserService {
         );
         AuthorEntity authorEntity;
         if (possibleAuthorEntity.isEmpty()) {
-            authorEntity = new AuthorEntity();
-            authorEntity.setName(addFavAuthorRequest.getAuthorName());
-            authorRepository.save(authorEntity);
-        } else {
-            authorEntity = possibleAuthorEntity.get();
+            return null;
         }
+        authorEntity = possibleAuthorEntity.get();
 
         userRepository.addFavAuthor(possibleUserEntity.get().getId(), authorEntity.getId());
+        return authorEntity;
     }
 
-    public void addFavGenre(AddFavGenreRequest addFavGenreRequest) {
+    public GenreEntity addFavGenre(AddFavGenreRequest addFavGenreRequest) {
         Optional<UserEntity> possibleUserEntity = userRepository.findByLogin(addFavGenreRequest.getLogin());
         if (possibleUserEntity.isEmpty()) {
-            return;
+            return null;
         }
 
         Optional<GenreEntity> possibleAuthorEntity = genreRepository.findByGenreName(
@@ -85,14 +83,12 @@ public class UserService {
         );
         GenreEntity genreEntity;
         if (possibleAuthorEntity.isEmpty()) {
-            genreEntity = new GenreEntity();
-            genreEntity.setName(addFavGenreRequest.getGenreName());
-            genreRepository.save(genreEntity);
-        } else {
-            genreEntity = possibleAuthorEntity.get();
+            return null;
         }
+        genreEntity = possibleAuthorEntity.get();
 
         userRepository.addFavGenre(possibleUserEntity.get().getId(), genreEntity.getId());
+        return genreEntity;
     }
 
     public void deleteFavAuthor(DeleteFavAuthorRequest deleteFavAuthorRequest) {
